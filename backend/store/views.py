@@ -1,8 +1,18 @@
-from django.http import JsonResponse 
-# Create your views here.
+from rest_framework.response import  Response
+from rest_framework import status
+from .models import Product, Category
+from .serializers import ProductSerializer, CategorySerializer
+from rest_framework.decorators import api_view
 
-def home(request):
-    data = {
-        'message': 'Welcome to the E-commerce API'
-    }
-    return JsonResponse(data)
+@api_view(['GET'])
+def get_products(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many = True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_category(request):
+    categories = Category.objects.all()
+    serializer = CategorySerializer(categories, many=True)
+    return Response(serializer.data)
+
