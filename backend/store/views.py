@@ -7,12 +7,11 @@ from rest_framework.decorators import api_view
 @api_view(['GET'])
 def get_products(request):
     products = Product.objects.all()
-    serializer = ProductSerializer(products, many = True)
+    serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_category(request):
+def get_categories(request):
     categories = Category.objects.all()
     serializer = CategorySerializer(categories, many=True)
     return Response(serializer.data)
-

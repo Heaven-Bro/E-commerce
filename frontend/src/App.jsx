@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
-  const [products, setProducts] = useState('')
+  const [products, setProducts] = useState([])
 
   useEffect(() => {
     fetch('http://localhost:8000/api/products/')
       .then(response => response.json())
-      .then(data => setProducts(data.products))
+      .then(data => setProducts(data))
       .catch(error => console.error('Error fetching data:', error))
   }, [])
 
@@ -19,7 +19,7 @@ function App() {
           <div key={product.id} className="bg-white shadow-md rounded-lg p-4 mb-4">
             <h2 className="text-xl font-semibold">{product.name}</h2>
             <p className="text-gray-600">{product.description}</p>
-            <p className="text-gray-600">${product.price.toFixed(2)}</p>
+            <p className="text-gray-600">${product.price}</p>
           </div>
         ))}
       </div>
