@@ -6,8 +6,10 @@ function ProductList() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const BASE_URL = import.meta.env.VITE_DJANGO_BASE_URL;
+
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/products')
+        fetch(`${BASE_URL}/api/products`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
