@@ -41,7 +41,7 @@ function Product_Details() {
             <div className="bg-white rounded-2xl shadow-lg p-68 max-w-3xl w-full mx-auto">
                 <div className="flex flex-col md:flex-row items-center gap-8">
                     <img
-                        src={`${BASE_URL}${product.image}`}
+                        src={`${product.image}`}
                         alt={product.name}
                         className="w-full md:w-1/2 h-auto object-cover rounded-lg" />
                     <div className="flex-1">
