@@ -37,8 +37,8 @@ function Product_Details() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 flex justify-content items-center py-10">
-            <div className="bg-white rounded-2xl shadow-lg p-68 max-w-3xl w-full mx-auto">
+        <div className="min-h-screen bg-gray-100 flex justify-content items-center py-10 ">
+            <div className="bg-white rounded-2xl shadow-lg p-8 max-w-3xl w-full ">
                 <div className="flex flex-col md:flex-row items-center gap-8">
                     <img
                         src={`${product.image}`}
