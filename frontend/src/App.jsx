@@ -3,6 +3,7 @@ import ProductDetails from "./pages/ProductDetails";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import CartPage from "./pages/CartPage";
+import Footer from "./components/Footer";
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
                 <Route path="/products/:id" element={<ProductDetails />} />
                 <Route path="/cart" element={<CartPage />} />
             </Routes>
+            <Footer />
         </Router>
     );
 }
