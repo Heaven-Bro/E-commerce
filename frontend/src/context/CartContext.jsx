@@ -16,7 +16,7 @@ export const CartProvider = ({children}) => {
             }
             const data = await response.json();
             setCartItems(data.items || []);
-            setTotal(data.total || 0);
+            setTotal(data.total_price || 0);
 
         } catch (error) {
             console.error('Error fetching cart:', error);
