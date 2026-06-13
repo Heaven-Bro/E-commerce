@@ -1,38 +1,85 @@
-import {createContext,useContext, useState} from 'react';
+import {createContext,useContext, useState, useEffect} from 'react';
 
 const CartContext = createContext();
 
 export const CartProvider = ({children}) => {
     const [cartItems, setCartItems] = useState([]);
+    const BASEURL = import.meta.env.VITE_DJANGO_BASE_URL;
+    const [total, setTotal] = useState(0);
 
-    const addToCart = (product) => {
-        const existingItem = cartItems.find(item => item.id === product.id);
-        if (existingItem) {
-            setCartItems(cartItems.map(item =>
-                item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-            ));
-        } else {
-            setCartItems([...cartItems, { ...product, quantity: 1 }]);
+    //fetch cart items from backend
+    const fetchCart = async () => {
+        try {
+            const response = await fetch(`${BASEURL}/api/cart/`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch cart');
+            }
+            const data = await response.json();
+            setCartItems(data.items || []);
+            setTotal(data.total || 0);
+
+        } catch (error) {
+            console.error('Error fetching cart:', error);
         }
     };
 
-    const removeFromCart = (productId) => {
-        setCartItems(cartItems.filter(item => item.id !== productId));
+    useEffect(() => {
+        fetchCart();
+    }, []);
+
+    const addToCart = async (product) => {
+        try {
+            await fetch(`${BASEURL}/api/cart/add/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ product_id: product.id })
+            });
+            fetchCart();
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+        }
     };
 
-    const updateQuantity = (productId, newQuantity) => {
-        if (newQuantity <= 0) {
-            removeFromCart(productId);
+    const removeFromCart = async (itemId) => {
+        try {
+            await fetch(`${BASEURL}/api/cart/remove/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ item_id: itemId })
+            });
+            fetchCart();
+        } catch (error) {
+            console.error('Error removing from cart:', error);
+        }
+    };
+
+    const updateQuantity = async ( itemId, quantity) => {
+        if (quantity < 1) {
+            await removeFromCart(itemId);
             return;
         }
-        setCartItems(cartItems.map(item => 
-            item.id === productId ? { ...item, quantity: newQuantity } : item
-        ));
+        try {
+            await fetch(`${BASEURL}/api/cart/update/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ item_id: itemId, quantity: quantity })
+            });
+            fetchCart();
+        } catch (error) {
+            console.error('Error updating cart quantity:', error);
+        }
     };
+
 
 
     return (
-        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity }}>
+        <CartContext.Provider value={{ cartItems, total, addToCart, removeFromCart, updateQuantity }}>
             {children}
         </CartContext.Provider>
     );
