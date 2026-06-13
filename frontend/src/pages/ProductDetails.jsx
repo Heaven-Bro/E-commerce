@@ -39,11 +39,9 @@ function ProductDetails() {
     }
 
     const handleAddToCart = () => {
-        if (!localStorage.getItem('access_token')) {
-            window.location.href = '/login';
-            return;
-        }
-        addToCart(product.id);
+        
+        addToCart(product);
+        
     }
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center items-center py-10">
