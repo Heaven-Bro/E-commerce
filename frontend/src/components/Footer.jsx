@@ -52,7 +52,7 @@ export default function Footer() {
                             </a>
                         </div>
                     </div>
-
+z
                     {/* Shop */}
                     <div>
                         <h3 className="text-lg font-semibold text-white mb-5">
@@ -143,7 +143,7 @@ export default function Footer() {
             <div className="border-t border-gray-800">
                 <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-sm text-gray-500">
-                        © {new Date().getFullYear()} ShopSphere. All rights reserved.
+                        © {new Date().getFullYear()} E-commerce Store. All rights reserved.
                     </p>
 
                     <div className="flex gap-6 text-sm">
