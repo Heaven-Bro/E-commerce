@@ -30,13 +30,13 @@ class CartSerializer(serializers.ModelSerializer):
         model = Cart
         fields = '__all__' 
 
-class UserSerilizer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
 
 
-class RegisterSerilizer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only = True)
     password2 = serializers.CharField(write_only = True)
 

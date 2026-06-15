@@ -1,8 +1,10 @@
 from rest_framework.response import  Response
 from rest_framework import status
 from .models import Product, Category, Cart, CartItem, Order, OrderItem
-from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer
-from rest_framework.decorators import api_view
+from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer, RegisterSerializer, UserSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.contrib.auth.models import User
 
 @api_view(['GET'])
 def get_products(request):
@@ -28,8 +30,9 @@ def get_product_detail(request, pk):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_cart(request):
-        cart, created = Cart.objects.get_or_create(user=None)
+        cart, created = Cart.objects.get_or_create(user=request.user)
         serializer = CartSerializer(cart)
         return Response(serializer.data)
 
@@ -37,7 +40,7 @@ def get_cart(request):
 def add_to_cart(request):
     product_id = request.data.get('product_id')
     product = Product.objects.get(id=product_id)
-    cart, created = Cart.objects.get_or_create(user=None)
+    cart, created = Cart.objects.get_or_create(user=request.user)
     item, created = CartItem.objects.get_or_create(cart=cart, product=product)
     if not created:
         item.quantity += 1
@@ -45,6 +48,7 @@ def add_to_cart(request):
     return Response({'message': 'Product added to cart', "cart": CartSerializer(cart).data})
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def update_cart_item(request):
     item_id = request.data.get('item_id')
     quantity = request.data.get('quantity')
@@ -66,6 +70,7 @@ def update_cart_item(request):
             
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def remove_from_cart(request):
     item_id = request.data.get('item_id')
     CartItem.objects.filter(id=item_id).delete()
@@ -82,17 +87,20 @@ def create_order(request):
         phone = data.get('phone')
         payment_method = data.get('payment_method', 'COD')
 
-        cart = Cart.objects.get(user=None)
-
-        if not cart or not cart.items.exists():
-            return Response({'error': 'Cart is empty'}, status=status.HTTP_400_BAD_REQUEST)
+        # validate Phone Number
+        if not phone.isdigit() or len(phone) < 10:
+            return Response({'error': 'Invalid phone number'}, status=400)
+        
+        #Get user's cart
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        if not cart.items.exists():
+            return Response({'error': 'Cart is empty'}, status=400)
         
         total = sum(item.product.price * item.quantity for item in cart.items.all())
 
-
         #create order
         order = Order.objects.create(
-            user = None,
+            user = request.user,
             total_amount = total,
         )
 
@@ -114,3 +122,14 @@ def create_order(request):
         })
     except Exception as e:
         return Response({"error": str(e)}, status=500)
+    
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def register_view(request):
+    serializer = RegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        return Response({"message":"User created sucessfully", "user" : UserSerializer(user).data}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
