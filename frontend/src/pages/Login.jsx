@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { saveTokens } from "../utils/auth";
+import { saveToken } from "../utils/auth";
 
 function Login() {
     const BASE = import.meta.env.VITE_DJANGO_BASE_URL;
@@ -21,7 +21,7 @@ function Login() {
             });
             const data = await res.json();
             if (res.ok) {
-                saveTokens(data);
+                saveToken(data);
                 setMsg("Login successful!");
                 setTimeout(() => nav("/"), 800);
             } else {

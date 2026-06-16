@@ -1,4 +1,4 @@
-import {navgate, Outlet, redirect} from "react-router-dom"
+import {Navigate, Outlet} from "react-router-dom"
 
 const isAuthenticated = () => !!localStorage.getItem("access_token");
 

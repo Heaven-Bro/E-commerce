@@ -9,7 +9,12 @@ function ProductDetails() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { addToCart } = useCart();
-
+    const handleAddToCart = () => {
+        if(!localStorage.getItem('access_token')){
+            window.location.href = '/login';
+        }
+        addToCart(product.id);
+    }
     useEffect(() => {
         fetch(`${BASEURL}api/products/${id}/`)
             .then((response) => {
@@ -56,7 +61,7 @@ function ProductDetails() {
                         <p className="text-2xl font-semibold text-green-600 mb-6">
                             {product.price}
                         </p>
-                        <button onClick={() => addToCart(product.id)} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <button onClick={handleAddToCart} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
                             Add to Cart 🛒
                         </button>
                         {/* Home Button */}

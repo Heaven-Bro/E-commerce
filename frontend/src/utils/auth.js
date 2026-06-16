@@ -8,9 +8,8 @@ export const clearTokens = () => {
     localStorage.removeItem("refresh_token");
 };
 
-export const getAccessToken = () => {
-    return localStorage.getItem("access_token");
-};
+export const getAccessToken = () => localStorage.getItem("access_token");
+
 
 export const authFetch = (url, options = {}) => {
     const token = getAccessToken();
