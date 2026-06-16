@@ -1,0 +1,7 @@
+import {navgate, Outlet, redirect} from "react-router-dom"
+
+const isAuthenticated = () => !!localStorage.getItem("access_token");
+
+export default function PrivateRouter({redirectTo = "/login"}){
+    return isAuthenticated()? <Outlet /> : <Navigate to ={redirect} replace/> ;
+}
